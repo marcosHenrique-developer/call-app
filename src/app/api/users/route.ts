@@ -1,18 +1,23 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-import { prisma } from '@/lib/prisma';
+import { NextRequest, NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
 
-export async function POST(res: NextApiResponse, req: NextApiRequest) {
+interface IUserData {
+  name: string
+  username: string
+}
+export async function POST(req: NextRequest) {
   if (req.method !== 'POST') {
-    return res.status(405).end();
+    return NextResponse.json('error', { status: 405 })
   }
 
-  const { name, username } = req.body;
+  const data: IUserData = await req.json()
+  const { name, username } = data
 
   const user = await prisma.user.create({
     data: {
       name,
       username,
     },
-  });
-  return res.status(201).json(user);
+  })
+  return NextResponse.json(user, { status: 200 })
 }
