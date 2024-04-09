@@ -9,6 +9,8 @@ import { useForm } from 'react-hook-form'
 import { useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { api } from '@/lib/axios'
+import { AxiosError } from 'axios'
+import { toast } from 'react-toastify'
 
 const registerFormSchema = z.object({
   username: z
@@ -50,8 +52,29 @@ export default function Register() {
         name: data.name,
         username: data.username,
       })
+      toast.success('Usuário adicionado!', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      })
     } catch (err) {
-      console.log(err)
+      if (err instanceof AxiosError && err?.response?.data?.message) {
+        toast.error(err?.response?.data?.message, {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+        })
+      }
     }
   }
 

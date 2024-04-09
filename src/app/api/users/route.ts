@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { cookies } from 'next/headers'
 
 interface IUserData {
   name: string
@@ -13,11 +14,29 @@ export async function POST(req: NextRequest) {
   const data: IUserData = await req.json()
   const { name, username } = data
 
+  const userExists = await prisma.user.findUnique({
+    where: {
+      username,
+    },
+  })
+  if (userExists) {
+    return NextResponse.json(
+      { message: 'Username already exists' },
+      { status: 400 },
+    )
+  }
+
   const user = await prisma.user.create({
     data: {
       name,
       username,
     },
   })
-  return NextResponse.json(user, { status: 200 })
+
+  cookies().set('@call:userId', user.id, {
+    maxAge: 60 * 60 * 24 * 7, // 7Days
+    path: '/',
+  })
+
+  return NextResponse.json(user, { status: 201 })
 }
