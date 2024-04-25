@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { useEffect } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { api } from '@/lib/axios'
 import { AxiosError } from 'axios'
 import { toast } from 'react-toastify'
@@ -28,6 +28,9 @@ const registerFormSchema = z.object({
 type RegisterFormData = z.infer<typeof registerFormSchema>
 
 export default function Register() {
+  const router = useRouter()
+  const query = useSearchParams()
+
   const {
     register,
     handleSubmit,
@@ -36,8 +39,6 @@ export default function Register() {
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerFormSchema),
   })
-
-  const query = useSearchParams()
 
   useEffect(() => {
     const username = query.get('username')
@@ -54,7 +55,7 @@ export default function Register() {
       })
       toast.success('Usuário adicionado!', {
         position: 'top-right',
-        autoClose: 5000,
+        autoClose: 3000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -62,11 +63,12 @@ export default function Register() {
         progress: undefined,
         theme: 'light',
       })
+      router.push('/register/connect-calendar')
     } catch (err) {
       if (err instanceof AxiosError && err?.response?.data?.message) {
         toast.error(err?.response?.data?.message, {
           position: 'top-right',
-          autoClose: 5000,
+          autoClose: 3000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,

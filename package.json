@@ -14,6 +14,7 @@
     "@prisma/client": "^5.12.1",
     "axios": "^1.6.8",
     "next": "14.1.4",
+    "next-auth": "^4.24.7",
     "nookies": "^2.5.2",
     "phosphor-react": "^1.4.1",
     "react": "^18",

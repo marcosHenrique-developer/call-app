@@ -1,3 +1,4 @@
+import NextAuthSessionProvider from '@/context/NextAuthProvider'
 import { StitchesRegistry } from '@/styles/global'
 import type { Metadata } from 'next'
 import { Roboto } from 'next/font/google'
@@ -19,8 +20,10 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={roboto.className}>
-        <StitchesRegistry>{children}</StitchesRegistry>
-        <ToastContainer />
+        <NextAuthSessionProvider>
+          <StitchesRegistry>{children}</StitchesRegistry>
+          <ToastContainer />
+        </NextAuthSessionProvider>
       </body>
     </html>
   )
